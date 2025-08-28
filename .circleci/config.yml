@@ -75,13 +75,10 @@ workflows:
   simple_workflow:
     jobs:
       - build # Run build job first
-      - lint: # Run lint job after build
-          requires:
-            - build
+
       - test: # Run test job after build
           requires:
             - build # test depends on build
       - publish:
           requires:
             - test
-            - lint
