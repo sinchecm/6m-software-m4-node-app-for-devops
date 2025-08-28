@@ -3,10 +3,24 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.1
   docker: circleci/docker@2.1.4
+
+# commands - resuable sets of steps
+commands:
+  install_deps:
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+
 # Each job has 2 parts - 1. Executor, 2. Steps
 jobs:
   build:
+    # executor:
+    #   name: docker
+    #   docker:
+    #     - image: cimg/node:16.10
     # Means spin up a container using node:16.10 and run the steps
+    # Shorthand for the executor
     docker:
       - image: cimg/node:16.10
     steps:
@@ -19,13 +33,19 @@ jobs:
       # - run: |
       #     echo "Installing dependencies"
       #     npm install
+  lint:
+    docker:
+      - image: cimg/node:20.12
+    steps:
+      - install_deps
+      - run: |
+          echo "Running lint..."
+          npm run lint
   test:
     docker:
       - image: cimg/node:16.10
     steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
+      - install_deps
       - run: |
           echo "Running tests..."
           npm run test
@@ -34,6 +54,9 @@ workflows:
   simple_workflow:
     jobs:
       - build # Run build job first
+      - lint: # Run lint job after build
+          requires:
+            - build
       - test: # Run test job after build
           requires:
             - build # test depends on build
