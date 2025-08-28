@@ -62,9 +62,13 @@ jobs:
       # Without this, we have manually run `docker login`
       - docker/check
       - docker/build:
-          image: sinchecm/test-repository
+          image:
+            sinchecm/test-repository
+            # tag with current git revision (commit hash) and latest tag
+          tag: << pipeline.git.revision >>,latest
       - docker/push:
           image: sinchecm/test-repository
+          tag: << pipeline.git.revision >>,latest
 
 # Define the workflow for job execution order
 workflows:
