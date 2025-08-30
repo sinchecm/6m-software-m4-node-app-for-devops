@@ -68,11 +68,11 @@ jobs:
       - docker/check
       # Use Docker orb to build and push image
       - docker/build:
-          image: thinkdaniel/test-repository
+          image: sinchecm/test-repository
           # tag with current git revision (commit hash) and latest tag
           tag: << pipeline.git.revision >>,latest
       - docker/push:
-          image: thinkdaniel/test-repository
+          image: sinchecm/test-repository
           tag: << pipeline.git.revision >>,latest
   deploy:
     docker:
@@ -88,15 +88,15 @@ jobs:
             echo "Deploying pre-built image to Heroku..."
             heroku container:login
             # Use Heroku container stack
-            heroku stack:set container --app thinkdaniel-su-devops
+            heroku stack:set container --app sinchecm-su-devops
             # Pull image that was built in publish job
-            docker pull thinkdaniel/test-repository:<< pipeline.git.revision >>
+            docker pull sinchecm/test-repository:<< pipeline.git.revision >>
             # Tag it for Heroku
-            docker tag thinkdaniel/test-repository:<< pipeline.git.revision >> registry.heroku.com/thinkdaniel-su-devops/web
+            docker tag sinchecm/test-repository:<< pipeline.git.revision >> registry.heroku.com/sinchecm-su-devops/web
             # Push to Heroku Container Registry
-            docker push registry.heroku.com/thinkdaniel-su-devops/web
+            docker push registry.heroku.com/sinchecm-su-devops/web
             # Release the pushed Docker image
-            heroku container:release web --app thinkdaniel-su-devops
+            heroku container:release web --app sinchecm-su-devops
 
   # deploy:
   #   docker:
