@@ -1,5 +1,5 @@
 /* eslint-disable */
-const targetFn = require("./controller");
+const { print: targetFn } = require("./controller");
 
 describe("the print function", () => {
   // standard best practice
